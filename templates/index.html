@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Text Translator</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .form-control {
+            height: auto;
+        }
+        .btn-primary, .btn-secondary {
+            margin-top: 10px;
+        }
+        .api-key-info {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .token-counter {
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .token-counter.warning {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Medical Text Translator</h1>
+        <form method="post">
+            <div class="form-group">
+                <label for="text">Enter text in English:</label>
+                <textarea class="form-control" id="text" name="text" rows="5" oninput="updateTokenCount()">{{ original_text }}</textarea>
+                <div id="tokenCounter" class="token-counter">Tokens: 0</div>
+            </div>
+            <div class="form-group">
+                <label for="translated">Translated text in Arabic:</label>
+                <textarea class="form-control" id="translated" name="translated" rows="5" readonly>{{ translated_text }}</textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" name="action" value="translate" class="btn btn-primary">Translate</button>
+                <button type="submit" name="action" value="switch" class="btn btn-secondary">Switch API Key</button>
+            </div>
+        </form>
+        {% if error_message %}
+        <div class="text-center error-message">{{ error_message }}</div>
+        {% endif %}
+        <p class="text-center api-key-info">Currently using API Key: {{ api_key }}</p>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function countTokens(text) {
+            // Token count based on character count
+            return text.length;
+        }
+
+        function updateTokenCount() {
+            const textArea = document.getElementById('text');
+            const tokenCounter = document.getElementById('tokenCounter');
+            const tokenCount = countTokens(textArea.value);
+
+            tokenCounter.textContent = `Tokens: ${tokenCount}`;
+            
+            if (tokenCount > 4000) {
+                tokenCounter.classList.add('warning');
+            } else {
+                tokenCounter.classList.remove('warning');
+            }
+        }
+
+        // Initialize token count on page load
+        document.addEventListener('DOMContentLoaded', (event) => {
+            updateTokenCount();
+        });
+    </script>
+</body>
+</html>
